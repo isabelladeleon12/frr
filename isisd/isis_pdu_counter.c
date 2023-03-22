@@ -91,3 +91,13 @@ void pdu_counter_print(struct vty *vty, const char *prefix,
 			pdu_counter_index_to_name(i), counter[i]);
 	}
 }
+
+void pdu_counter_print_drops(struct vty *vty, const char *prefix, pdu_counter_t rx_counter, pdu_counter_t processed_counter)
+{
+	for (int i = 0; i < PDU_COUNTER_SIZE; i++) {
+		if (!rx_counter[i] || !processed_counter[i])
+			continue;
+		vty_out(vty, "%s%s: %" PRIu64 "\n", prefix,
+			pdu_counter_index_to_name(i), rx_counter[i] - processed_counter[i]);
+	}
+}

@@ -1777,6 +1777,9 @@ int isis_handle_pdu(struct isis_circuit *circuit, uint8_t *ssnpa)
 		return ISIS_ERROR;
 	}
 
+	if (retval == ISIS_OK)
+		pdu_counter_count(circuit->area->pdu_processed_counters, pdu_type);
+
 	return retval;
 }
 
