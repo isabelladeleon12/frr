@@ -23,7 +23,7 @@ typedef uint64_t pdu_counter_t[PDU_COUNTER_SIZE];
 
 void pdu_counter_print(struct vty *vty, const char *prefix,
 		       pdu_counter_t counter);
-void pdu_counter_print_drops(struct vty *vty, const char *prefix, pdu_counter_t rx_counter, pdu_counter_t processed_counter);
 void pdu_counter_count(pdu_counter_t counter, uint8_t pdu_type);
+void pdu_counter_count_drop(pdu_counter_t counter, uint8_t pdu_type);
 
 #endif
