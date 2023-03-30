@@ -3029,7 +3029,7 @@ void cli_show_isis_log_adjacency(struct vty *vty, const struct lyd_node *dnode,
  * XPath: /frr-isisd:isis/instance/log-pdu-drops
  */
 DEFPY_YANG(log_pdu_drops, log_pdu_drops_cmd, "[no] log-pdu-drops",
-      NO_STR "Log any dropped PDUs\n")
+	   NO_STR "Log any dropped PDUs\n")
 {
 	nb_cli_enqueue_change(vty, "./log-pdu-drops", NB_OP_MODIFY,
 			      no ? "false" : "true");

@@ -1756,7 +1756,7 @@ int isis_handle_pdu(struct isis_circuit *circuit, uint8_t *ssnpa)
 		isis_notif_max_area_addr_mismatch(circuit, max_area_addrs,
 						  raw_pdu, sizeof(raw_pdu));
 #endif /* ifndef FABRICD */
-		pdu_counter_count_drop(circuit->area, pdu_type);
+		pdu_counter_count_drop(circuit->area, pdu_type);	
 		return ISIS_ERROR;
 	}
 
@@ -1764,24 +1764,17 @@ int isis_handle_pdu(struct isis_circuit *circuit, uint8_t *ssnpa)
 	case L1_LAN_HELLO:
 	case L2_LAN_HELLO:
 	case P2P_HELLO:
-		if (fabricd && pdu_type != P2P_HELLO) {
-			pdu_counter_count_drop(circuit->area,
-					  pdu_type);
+		if (fabricd && pdu_type != P2P_HELLO)
 			return ISIS_ERROR;
-		}
-
 		retval = process_hello(pdu_type, circuit, ssnpa);
 		break;
 	case L1_LINK_STATE:
 	case L2_LINK_STATE:
 	case FS_LINK_STATE:
-		if (fabricd && pdu_type != L2_LINK_STATE &&
-		    pdu_type != FS_LINK_STATE) {
-			pdu_counter_count_drop(circuit->area,
-					  pdu_type);
+		if (fabricd
+		    && pdu_type != L2_LINK_STATE
+		    && pdu_type != FS_LINK_STATE)
 			return ISIS_ERROR;
-		}
-
 		retval = process_lsp(pdu_type, circuit, ssnpa, max_area_addrs);
 		break;
 	case L1_COMPLETE_SEQ_NUM:
@@ -1791,7 +1784,7 @@ int isis_handle_pdu(struct isis_circuit *circuit, uint8_t *ssnpa)
 		retval = process_snp(pdu_type, circuit, ssnpa);
 		break;
 	default:
-		pdu_counter_count_drop(circuit->area, pdu_type);
+		pdu_counter_count_drop(circuit->area, pdu_type);	
 		return ISIS_ERROR;
 	}
 
