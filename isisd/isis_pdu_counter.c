@@ -81,6 +81,31 @@ void pdu_counter_count(pdu_counter_t counter, uint8_t pdu_type)
 	counter[index]++;
 }
 
+uint64_t pdu_counter_get_count(pdu_counter_t counter, uint8_t pdu_type)
+{
+	int index = pdu_type_to_counter_index(pdu_type);
+	if (index < 0)
+		return;
+	return counter[index];
+}
+
+void pdu_counter_count_drop(struct isis_area *area, uint8_t pdu_type)
+{
+	pdu_counter_t counter = area->pdu_drop_counters;
+	pdu_counter_count(counter, pdu_type);
+
+	if (area->log_pdu_drops) {
+		uint64_t total_drops = 0;
+		for (int i = 0; i < PDU_COUNTER_SIZE; i++) {
+			if (!counter[i])
+				continue;
+			total_drops += counter[i];
+		}
+
+		zlog_info("PDU drop detected of type: %s. %d Total Drops; %d L1 IIH drops;  %d L2 IIH drops; %d P2P IIH drops; %d L1 LSP drops; %d L2 LSP drops; %d FS LSP drops; %d L1 CSNP drops; %d L2 CSNP drops; %d L1 PSNP drops; %d L2 PSNP drops.", pdu_counter_index_to_name(pdu_type_to_counter_index(pdu_type)), total_drops, pdu_counter_get_count(counter, L1_LAN_HELLO), pdu_counter_get_count(counter, L2_LAN_HELLO), pdu_counter_get_count(counter, P2P_HELLO), pdu_counter_get_count(counter, L1_LINK_STATE), pdu_counter_get_count(counter, L2_LINK_STATE), pdu_counter_get_count(counter, FS_LINK_STATE), pdu_counter_get_count(counter, L1_COMPLETE_SEQ_NUM), pdu_counter_get_count(counter, L2_COMPLETE_SEQ_NUM), pdu_counter_get_count(counter, L1_PARTIAL_SEQ_NUM), pdu_counter_get_count(counter, L2_PARTIAL_SEQ_NUM));
+	}
+}
+
 void pdu_counter_print(struct vty *vty, const char *prefix,
 		       pdu_counter_t counter)
 {
